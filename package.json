@@ -1,28 +1,27 @@
 {
   "name": "soteria-server",
   "version": "1.0.0",
-  "description": "soteria app server",
+  "description": "signinwith app server",
   "main": "server.js",
   "scripts": {
     "test": "mocha"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stteem/soteria-server.git"
+    "url": "git+https://github.com/stteem/signinwith-server.git"
   },
   "author": "Uwem Uke",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/stteem/soteria-server/issues"
+    "url": "https://github.com/stteem/signinwith-server/issues"
   },
-  "homepage": "https://github.com/stteem/soteria-server#readme",
+  "homepage": "https://github.com/stteem/signinwith-server#readme",
   "dependencies": {
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.9",
-    "mongoose-unique-validator": "^2.0.3",
-    "multer": "^1.4.2"
+    "mongoose-unique-validator": "^2.0.3"
   }
 }
