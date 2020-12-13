@@ -1,20 +1,18 @@
-//MongoDb Username: stteem
-//MongoDb Password: Qk7wO91E66iANtf1
-//Connection String: mongodb+srv://stteem:<password>@soteria.nt1zb.mongodb.net/<dbname>?retryWrites=true&w=majority
-
 const express = require('express');
 const bodyParser = require('body-parser');
+//var cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-//const Thing = require('./models/thing');
 const userRoutes = require('./routes/user');
-const itemsRoutes = require('./routes/items');
 const path = require('path');
 
 const app = express();
 
-mongoose.connect('mongodb+srv://stteem:Qk7wO91E66iANtf1@soteria.nt1zb.mongodb.net/Soteria?retryWrites=true&w=majority', {
+// Initialize mongoose object
+mongoose.connect('mongodb+srv://dbSgn:bYy2nqHhX3IdI1Ca@signinwith.upshr.mongodb.net/Signinwith?retryWrites=true&w=majority', {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true
 })
   .then(() => {
     console.log('Successfully connected to MongoDB Atlas!');
@@ -24,6 +22,8 @@ mongoose.connect('mongodb+srv://stteem:Qk7wO91E66iANtf1@soteria.nt1zb.mongodb.ne
     console.error(error);
 });
 
+// Set Headers
+//x-auth-token,
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -31,16 +31,21 @@ app.use((req, res, next) => {
   next();
 });
 
+//Set Cors
+/*var corsOption = {
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    exposedHeaders: ['x-auth-token']
+};
+app.use(cors(corsOption));*/
+
 //parse request body into a json object
 app.use(bodyParser.json());
 
-//allow access to the images folder/static resource
-//Using the built-in  path  package and Express'  static  method,
-// we can serve up static resources such as images
-//app.use('/images', express.static(path.join(__dirname, 'images')));
+//app.use(cookieParser());
 
-app.use('/api/items', itemsRoutes);
-app.use('/api/auth', userRoutes);
+app.use('/api/v1/auth', userRoutes);
 
 
 module.exports = app;
