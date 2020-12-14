@@ -43,7 +43,7 @@ exports.loginCustomUser = (req, res, next) => {
             });
           }
 
-          const token = jwt.sign({ userId: user._id }, process.env.SECRET, { expiresIn: '24h' });
+          const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: '24h' });
 
           return res.status(200).json({
             token: token,
@@ -104,7 +104,7 @@ exports.loginGoogleUser = (req, res, next) => {
             (response) => {
               console.log('signUpGoogleUser res ', response)
               console.log('user.objectId ', response._id)
-              const token = jwt.sign({ userId: response._id }, process.env.SECRET, { expiresIn: '24h' });
+              const token = jwt.sign({ userId: response._id }, process.env.TOKEN_SECRET, { expiresIn: '24h' });
 
               console.log('Header set')
                 res.status(201).json({
@@ -133,7 +133,7 @@ exports.loginGoogleUser = (req, res, next) => {
 
       if (decoded.payload.iss == 'accounts.google.com' && decoded.payload.email == user.email) {
 
-        const token = jwt.sign({ userId: user._id }, process.env.SECRET, { expiresIn: '24h' });
+        const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: '24h' });
 
         return res.status(200).json({
           token: token,

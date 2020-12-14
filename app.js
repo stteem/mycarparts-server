@@ -1,14 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-//var cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/user');
 const path = require('path');
 
 const app = express();
 
+const dotenv = require("dotenv");
+dotenv.config();
+
 // Initialize mongoose object
-mongoose.connect('mongodb+srv://dbSgn:bYy2nqHhX3IdI1Ca@signinwith.upshr.mongodb.net/Signinwith?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
@@ -23,7 +25,6 @@ mongoose.connect('mongodb+srv://dbSgn:bYy2nqHhX3IdI1Ca@signinwith.upshr.mongodb.
 });
 
 // Set Headers
-//x-auth-token,
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -31,19 +32,8 @@ app.use((req, res, next) => {
   next();
 });
 
-//Set Cors
-/*var corsOption = {
-    origin: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-    exposedHeaders: ['x-auth-token']
-};
-app.use(cors(corsOption));*/
-
 //parse request body into a json object
 app.use(bodyParser.json());
-
-//app.use(cookieParser());
 
 app.use('/api/v1/auth', userRoutes);
 
