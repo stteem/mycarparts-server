@@ -27,57 +27,59 @@ exports.signup = (req, res, next) => {
 };
 
 
-
-exports.login = (req, res, next) => {
-  console.log('request body', req.body)
-
-  // If request body has password, we know it's from our custom login, and not from google's
-  if (req.body.password) {
-    User.findOne({ email: req.body.email }).then(
-      (user) => {
-        if (!user) {
-          return res.status(401).json({
-            error: new Error('User not found!')
-          });
-        }
-        bcrypt.compare(req.body.password, user.password).then(
-          (valid) => {
-            if (!valid) {
-              return res.status(401).json({
-                error: new Error('Incorrect password!')
-              });
-            }
-
-            const token = jwt.sign({ userId: user.objectId }, process.env.SECRET, { expiresIn: '24h' });
-
-            return res.status(200).json({
-              token: token,
-              user: res.name,
-              email: res.email,
-              imageUrl: req.body.imageUrl
-            });
-          }
-        ).catch(
-          (error) => {
-            res.status(500).json({
-              error: error
-            });
-          }
-        );
-      }
-    ).catch(
-      (error) => {
-        res.status(500).json({
-          error: error
+exports.loginCustomUser = (req, res, next) => {
+  User.findOne({ email: req.body.email }).then(
+    (user) => {
+      if (!user) {
+        return res.status(401).json({
+          error: new Error('User not found!')
         });
       }
-    );
-  }
+      bcrypt.compare(req.body.password, user.password).then(
+        (valid) => {
+          if (!valid) {
+            return res.status(401).json({
+              error: new Error('Incorrect password!')
+            });
+          }
 
-  const decodeToken = (token) => {
-    const decoded = jwt.decode(token, {complete: true});
-    return decoded;
-  }
+          const token = jwt.sign({ userId: user._id }, process.env.SECRET, { expiresIn: '24h' });
+
+          return res.status(200).json({
+            token: token,
+            user: user.firstName,
+            email: user.email,
+            imageUrl: () => { 
+              user.imageUrl ? user.imageUrl : ''; 
+            }
+          });
+        }
+      ).catch(
+        (error) => {
+          res.status(500).json({
+            error: error
+          });
+        }
+      );
+    }
+  ).catch(
+    (error) => {
+      res.status(500).json({
+        error: error
+      });
+    }
+  );
+}
+
+
+const decodeToken = (token) => {
+  const decoded = jwt.decode(token, {complete: true});
+  return decoded;
+}
+
+
+exports.loginGoogleUser = (req, res, next) => {
+  console.log('request body', req.body)
 
   // Google sign in and sign up
   User.findOne({ email: req.body.email }).then(
@@ -93,6 +95,7 @@ exports.login = (req, res, next) => {
         if (decoded.payload.iss == 'accounts.google.com') {
           const signUpGoogleUser = new User({
             name: req.body.name,
+            firstName: req.body.firstName,
             email: req.body.email,
             imageUrl: req.body.imageUrl
           });
@@ -103,11 +106,10 @@ exports.login = (req, res, next) => {
               console.log('user.objectId ', response._id)
               const token = jwt.sign({ userId: response._id }, process.env.SECRET, { expiresIn: '24h' });
 
-              res.setHeader('Authorization', token);
               console.log('Header set')
                 res.status(201).json({
                   token: token,
-                  user: response.name,
+                  user: response.firstName,
                   email: response.email,
                   imageUrl: response.imageUrl,
                   message: 'User added successfully!'
@@ -133,10 +135,9 @@ exports.login = (req, res, next) => {
 
         const token = jwt.sign({ userId: user._id }, process.env.SECRET, { expiresIn: '24h' });
 
-        res.setHeader('Authorization', token);
         return res.status(200).json({
           token: token,
-          user: user.name,
+          user: user.firstName,
           email: user.email,
           imageUrl: user.imageUrl,
           message: 'User found!'

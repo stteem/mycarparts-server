@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 
+
+// This middleware is meant for 201 routes
 module.exports = (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
