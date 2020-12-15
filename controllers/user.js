@@ -78,10 +78,9 @@ const decodeToken = (token) => {
 }
 
 
+// Google sign in and sign up
 exports.loginGoogleUser = (req, res, next) => {
-  console.log('request body', req.body)
-
-  // Google sign in and sign up
+  
   User.findOne({ email: req.body.email }).then(
     (user) => {
       console.log('lets try google')
@@ -99,14 +98,11 @@ exports.loginGoogleUser = (req, res, next) => {
             email: req.body.email,
             imageUrl: req.body.imageUrl
           });
-          console.log('new g user ', signUpGoogleUser)
           return signUpGoogleUser.save().then(
             (response) => {
-              console.log('signUpGoogleUser res ', response)
-              console.log('user.objectId ', response._id)
+              
               const token = jwt.sign({ userId: response._id }, process.env.TOKEN_SECRET, { expiresIn: '24h' });
 
-              console.log('Header set')
                 res.status(201).json({
                   token: token,
                   user: response.firstName,
