@@ -45,13 +45,13 @@ exports.loginCustomUser = (req, res, next) => {
 
           const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: '24h' });
 
+          const img = user.imageUrl ? user.imageUrl : ''; 
+
           return res.status(200).json({
             token: token,
             user: user.firstName,
             email: user.email,
-            imageUrl: () => { 
-              user.imageUrl ? user.imageUrl : ''; 
-            }
+            imageUrl: img
           });
         }
       ).catch(
