@@ -148,3 +148,26 @@ exports.loginGoogleUser = (req, res, next) => {
     }
   );
 }
+
+
+
+exports.getUsers = (req, res, next) => {
+  User.find().then(
+    (users) => {
+      res.status(200).json(users);
+    }
+  ).catch(
+    (error) => {
+      res.status(400).json({
+        error: error
+      });
+    }
+  );
+};
+
+
+exports.test = (req, res) => {
+  return res.status(200).json({
+   message: "pass!" 
+  });
+};
