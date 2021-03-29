@@ -49,6 +49,7 @@ const User = new Schema({
   },
   username: String,
   password: String,
+  googleId: String,
   facebookId: String,
   admin:   {
       type: Boolean,

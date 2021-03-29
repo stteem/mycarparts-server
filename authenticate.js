@@ -6,7 +6,7 @@ var JwtStrategy = require('passport-jwt').Strategy;
 var ExtractJwt = require('passport-jwt').ExtractJwt;
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 //var FacebookTokenStrategy = require('passport-facebook-token');
-
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 
 //passport.use(new LocalStrategy(User.authenticate()));
@@ -60,6 +60,36 @@ exports.verifyAdmin = (req, res, next) => {
         next(err);
     }
 }
+
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET
+  },
+  function(accessToken, refreshToken, profile, done) {
+    User.findOne({ googleId: profile.id }, function (err, user) {
+      //return done(err, user);
+        if (err) {
+            return done(err, false);
+        }
+        if (!err && user !== null) {
+            console.log('user ', user);
+            return done(null, user);
+        }
+        /*else {
+            user = new User({ username: profile.displayName });
+            user.googleId = profile.id;
+            user.firstname = profile.name.givenName;
+            user.lastname = profile.name.familyName;
+            user.save((err, user) => {
+                if (err)
+                    return done(err, false);
+                else
+                    return done(null, user);
+            })
+        }*/
+    });
+  }
+));
 
 /*exports.facebookPassport = passport.use(new FacebookTokenStrategy({
     clientID: config.facebook.clientId,

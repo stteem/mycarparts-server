@@ -1,10 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const userRoutes = require('./routes/user');
 const path = require('path');
-const cors = require('./routes/cors');
 const passport = require('passport');
+
+const cors = require('./routes/cors');
+const userRoutes = require('./routes/user');
+const shopRoutes = require('./routes/shop');
 
 const app = express();
 
@@ -29,6 +31,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 app.options('*', cors.cors);
 // Set Headers
 app.use((req, res, next) => {
+  //console.log('app req 1 ', req.body);
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
@@ -48,6 +51,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
 app.use('/api/v1/auth', userRoutes);
+app.use('/api/v1', shopRoutes);
 
 
 module.exports = app;

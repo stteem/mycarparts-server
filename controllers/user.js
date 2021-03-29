@@ -43,22 +43,26 @@ exports.signup = (req, res, next) => {
 
 
 exports.loginCustomUser = (req, res, next) => {
+  console.log('this req', req.body);
   passport.authenticate('local', (err, user, info) => {
-    if (err)
+    if (err){
+      console.log('this err', err);
       return next(err);
+    } 
 
     if (!user) {
+      console.log('this info', info);
       res.statusCode = 401;
       res.setHeader('Content-Type', 'application/json');
-      res.json({success: false, status: 'Login Unsuccessful!', err: info});
-      return;
+      return res.json({success: false, status: 'Login Unsuccessful, Password or email is incorrect!', err: info});
+      
     }
     req.logIn(user, (err) => {
       if (err) {
-        res.statusCode = 401;
+        res.statusCode = 402;
         res.setHeader('Content-Type', 'application/json');
-        res.json({success: false, status: 'Login Unsuccessful!', err: 'Could not log in user!'}); 
-        return;         
+        return res.json({success: false, status: 'Login Unsuccessful!', err: 'Could not log in user!'}); 
+                
       }
       // user has been loaded into the request by passport.authenticate
       var token = authenticate.getToken({_id: req.user._id});
@@ -71,6 +75,22 @@ exports.loginCustomUser = (req, res, next) => {
     }); 
   }) (req, res, next);
 };
+
+exports.googleLogin = (req, res) => {
+  passport.authenticate('google'), (req, res) => {
+    console.log('req.user1', req.user);
+    if (req.user) {
+      console.log('req.user', req.user);
+      var token = authenticate.getToken({_id: req.user._id});
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.json({success: true, token: token, status: 'You are successfully logged in!'});
+    }
+  }
+}
+
+
+
 
 /*exports.signup = (req, res, next) => {
   //console.log('req.body ', req.body);
@@ -160,7 +180,7 @@ const decodeToken = (token) => {
 
 // Google sign in and sign up
 exports.loginGoogleUser = (req, res, next) => {
-  console.log('req body ', req.body);
+  console.log('req google body ', req.body);
   User.findOne({ email: req.body.email }).then(
     (user) => {
       console.log('lets try google')
@@ -268,7 +288,6 @@ exports.checkJWTtoken = (req, res, next) => {
     else {
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
-      console.log('user ', user);
       return res.json({status: 'JWT valid!', success: true, user: user.firstname});
     }
   }) (req, res, next);
