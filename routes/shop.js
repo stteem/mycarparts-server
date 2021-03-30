@@ -5,6 +5,8 @@ const cors = require('./cors');
 
 const Shop = require('../models/shop');
 
+const User = require('../models/user');
+
 const shopRouter = express.Router();
 
 shopRouter.use(express.json());
@@ -12,11 +14,11 @@ shopRouter.use(express.json());
 shopRouter.route('/shop')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, authenticate.verifyUser, (req,res,next) => {
-    console.log('found this');
-    Shop.find(req.query)
-    .populate('owner')
+    console.log('found this', req.user);
+    Shop.find({owner : req.user._id})
+    //.populate('owner')
     .then((shop) => {
-        console.log('found')
+        console.log('found', shop)
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json(shop);
@@ -25,8 +27,8 @@ shopRouter.route('/shop')
 })
 .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     console.log('user ' + req.user);
-    
-    console.log('got here');
+    req.body.owner = req.user._id;
+    console.log('got here', req.body);
     Shop.create(req.body)
     .then((shop) => {
         console.log('Shop Created ', shop);

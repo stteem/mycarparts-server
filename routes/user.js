@@ -17,6 +17,10 @@ router.get('/auth/google/token', userCtrl.googleLogin);
 
 router.post('/signup', cors.corsWithOptions, userCtrl.signup);
 
+//router.post('/store', cors.corsWithOptions, userCtrl.store);
+
+//router.post('/store/storeId', cors.corsWithOptions, userCtrl.storeId);
+
 //router.post('/loginsocial', cors.corsWithOptions, userCtrl.loginGoogleUser);
 
 router.post('/logincustom', cors.corsWithOptions, userCtrl.loginCustomUser);
