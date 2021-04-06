@@ -1,12 +1,54 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
+require('mongoose-currency').loadType(mongoose);
+const Currency = mongoose.Types.Currency;
+
+const partSchema = mongoose.Schema({
+  vehicletype: {
+    type: String, 
+    required: true
+  },
+  model: {
+    type: String, 
+    required: true
+  },
+  year: {
+    type: String, 
+  },
+  part: { 
+    type: String, 
+    required: true
+  },
+  price: {
+    type: Currency,
+    required: true,
+    min: 0
+  },
+  imageurl: {
+    type: String,
+    required: true,
+  },
+  imageid: {
+    type: String,
+    required: true,
+  },
+  vendor:  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
+},
+{
+  timestamps: true
+});
+
 
 const shopSchema = mongoose.Schema({
   shopname: {
     type: String, 
     required: true,
-    unique: true
+    unique: true,
+    uniqueCaseInsensitive: true
   },
   state: {
     type: String, 
@@ -34,12 +76,13 @@ const shopSchema = mongoose.Schema({
   },
   owner: {
     type: String
-  }
+  },
+  items: [partSchema]
 },
 {
   timestamps: true
 });
 
-shopSchema.plugin(uniqueValidator, { message: '{PATH} {VALUE} already exists.'});
+shopSchema.plugin(uniqueValidator, { message: '{VALUE} already exists. Store name must be unique.'});
 
 module.exports = mongoose.model('Shop', shopSchema);
