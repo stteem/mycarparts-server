@@ -8,6 +8,7 @@ const cors = require('./routes/cors');
 const userRoutes = require('./routes/user');
 const shopRoutes = require('./routes/shop');
 const uploadRoutes = require('./routes/upload');
+const searchRoutes = require('./routes/search');
 
 const app = express();
 
@@ -54,5 +55,6 @@ app.use(passport.initialize());
 app.use('/api/v1/auth', userRoutes);
 app.use('/api/v1/shop', shopRoutes);
 app.use('/api/v1/upload', uploadRoutes);
+app.use('/api/v1/search', searchRoutes);
 
 module.exports = app;

@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
+const mongoose = require('mongoose').set('debug', true);
 const uniqueValidator = require('mongoose-unique-validator');
 
 require('mongoose-currency').loadType(mongoose);
