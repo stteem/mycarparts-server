@@ -22,6 +22,27 @@ module.exports = mongoose.model('User', userSchema);
 
 const Schema = mongoose.Schema;
 
+const Shipping_Address = new Schema({
+  state: {
+    type: String,
+    default: ''
+  },
+  lga: {
+    type: String,
+    default: ''
+  },
+  address: {
+    type: String,
+    default: ''
+  },
+  can_save: {
+    type: Boolean,
+  }
+},
+{
+  timestamps: true
+});
+
 const User = new Schema({
   firstname: {
     type: String,
@@ -54,7 +75,11 @@ const User = new Schema({
   admin:   {
       type: Boolean,
       default: false
-  }
+  },
+  shipping_address: [Shipping_Address]
+},
+{
+  timestamps: true
 });
 
 User.plugin(passportLocalMongoose);

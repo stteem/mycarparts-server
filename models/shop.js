@@ -22,9 +22,13 @@ const partSchema = mongoose.Schema({
     required: true
   },
   price: {
-    type: Currency,
+    type: Number,
     required: true,
     min: 0
+  },
+  weight: {
+    type: String,
+    required: true
   },
   imageurl: {
     type: String,

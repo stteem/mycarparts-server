@@ -40,12 +40,6 @@ app.use((req, res, next) => {
   next();
 });
 
-/*app.all('/', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next()
-});*/
-
 //parse request body into a json object
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

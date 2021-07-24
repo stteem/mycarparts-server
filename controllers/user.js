@@ -90,88 +90,6 @@ exports.googleLogin = (req, res) => {
 }
 
 
-
-
-/*exports.signup = (req, res, next) => {
-  //console.log('req.body ', req.body);
-  bcrypt.hash(req.body.password, 10).then(
-    (hash) => {
-      const user = new User({
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        telnum: req.body.telnum,
-        password: hash
-      });
-      //console.log('user ', user);
-      user.save().then(
-        (response) => {
-          console.log('saved');
-          //console.log('response ', response);
-        return res.status(201).json({
-            firstname: response.firstname,
-            lastname: response.lastname,
-            message: 'Sign up successful!'
-          });
-        }
-      ).catch(
-        (error) => {
-          console.log('error dey o');
-          res.status(500).json({
-            error: error
-          });
-        }
-      );
-    }
-  );
-};
-
-
-exports.loginCustomUser = (req, res, next) => {
-  User.findOne({ email: req.body.email }).then(
-    (user) => {
-      //console.log('user ', user);
-      if (!user) {
-        return res.status(401).json({
-          error: new Error('User not found!')
-        });
-      }
-      bcrypt.compare(req.body.password, user.password).then(
-        (valid) => {
-          console.log('valid ', valid);
-          if (!valid) {
-            return res.status(401).json({
-              error: new Error('Incorrect password!')
-            });
-          }
-
-          const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: '24h' });
-
-          //const img = user.image ? user.image : ''; 
-
-          return res.status(200).json({
-            token: token,
-            firstname: user.firstname
-          });
-        }
-      ).catch(
-        (error) => {
-          res.status(500).json({
-            error: error
-          });
-        }
-      );
-    }
-  ).catch(
-    (error) => {
-      res.status(500).json({
-        error: error
-      });
-    }
-  );
-}
-*/
-
 const decodeToken = (token) => {
   const decoded = jwt.decode(token, {complete: true});
   return decoded;
@@ -192,8 +110,11 @@ exports.loginGoogleUser = (req, res, next) => {
         let decoded = decodeToken(req.body.token);
 
         if (decoded.payload.iss == 'accounts.google.com') {
+          const name = req.body.name.split(' ');
+          console.log('name ',name)
           const signUpGoogleUser = new User({
-            name: req.body.name,
+            firstname: name[0],
+            lastname: name[1],
             email: req.body.email,
             imageUrl: req.body.image
           });
@@ -204,7 +125,7 @@ exports.loginGoogleUser = (req, res, next) => {
 
                 res.status(201).json({
                   token: token,
-                  user: response.name,
+                  user: response.firstname,
                   email: response.email,
                   image: response.imageUrl,
                   message: 'User added successfully!'
@@ -292,3 +213,73 @@ exports.checkJWTtoken = (req, res, next) => {
     }
   }) (req, res, next);
 };
+
+
+exports.getShippingAddress = (req, res, next) => {
+  console.log('shipping requested')
+    User.find({_id: req.user._id },{shipping_address:1})
+    .then((address) => {
+        console.log('found', address)
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(address);
+    }, (err) => next(err))
+    .catch((err) => {
+      console.log('error ', err)
+        res.statusCode = 500;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(err);
+    });
+}
+
+exports.postShippingAddress = (req, res, next) => {
+  console.log('body ',req.body)
+  User.findById(req.user._id)
+    .then((user) => {
+      user.shipping_address.push(req.body);
+      user.save()
+      .then((user) => {
+        User.find({_id: req.user._id },{shipping_address:1})
+        .then((address) => {
+
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json(address);               
+        }, (err) => next(err));
+      }, (err) => next(err))              
+    }, (err) => next(err))
+    .catch((err) => {
+      console.log('error ', err)
+        res.statusCode = 500;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(err);
+    });
+}
+
+exports.updateShippingAddress = (req, res, next) => {
+    User.findByIdAndUpdate(req.user._id, {
+        $set: req.body
+    }, { new: true })
+    .then((address) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json'); 
+        res.json(address);
+    }, (err) => next(err))
+    .catch((err) => {
+      console.log('error ', err)
+        res.statusCode = 500;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(err);
+    });
+}
+
+exports.deleteShippingAddress = (req, res, next) => {
+  User.findByIdAndUpdate(req.user._id, {
+    $pull: {shipping_address: {_id: req.body._id}}
+  })
+  .then(() => {
+    res.setHeader('Content-Type', 'application/json'); 
+    res.statusCode = 201;
+    res.json({message: 'success'});
+  })
+}
