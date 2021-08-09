@@ -18,9 +18,7 @@ dotenv.config();
 // Initialize mongoose object
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
+  useUnifiedTopology: true
 })
 .then(() => {
   console.log('Successfully connected to MongoDB Atlas!');
@@ -30,14 +28,25 @@ mongoose.connect(process.env.MONGODB_URI, {
   console.error(error);
 });
 
-app.options('*', cors.cors);
+//app.options('*', cors.cors);
 // Set Headers
 app.use((req, res, next) => {
-  //console.log('app req 1 ', req.body);
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+  var origin = req.get('origin');
+  console.log('origin ',origin)
+  res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+  res.setHeader('Access-Control-Expose-Headers', '*, Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  next();
+
+  // intercept OPTIONS method
+  if (req.method == 'OPTIONS') {
+    console.log('request method ',req.method)
+    res.sendStatus(200);
+  }
+  else {
+    next();
+  }
+  //next();
 });
 
 //parse request body into a json object

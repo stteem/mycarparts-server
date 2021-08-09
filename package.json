@@ -7,6 +7,9 @@
     "test": "mocha",
     "test:watch": "mocha --watch"
   },
+  "engines": {
+    "node": "14.16.1"
+ },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stteem/signinwith-server.git"

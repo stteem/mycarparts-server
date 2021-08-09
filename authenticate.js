@@ -61,7 +61,7 @@ exports.verifyAdmin = (req, res, next) => {
     }
 }
 
-passport.use(new GoogleStrategy({
+/*passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET
   },
@@ -75,7 +75,7 @@ passport.use(new GoogleStrategy({
             console.log('user ', user);
             return done(null, user);
         }
-        /*else {
+        else { this else block was commented out
             user = new User({ username: profile.displayName });
             user.googleId = profile.id;
             user.firstname = profile.name.givenName;
@@ -86,12 +86,12 @@ passport.use(new GoogleStrategy({
                 else
                     return done(null, user);
             })
-        }*/
+        }
     });
   }
 ));
 
-/*exports.facebookPassport = passport.use(new FacebookTokenStrategy({
+exports.facebookPassport = passport.use(new FacebookTokenStrategy({
     clientID: config.facebook.clientId,
     clientSecret: config.facebook.clientSecret
 }, (accessToken, refreshToken, profile, done) => {

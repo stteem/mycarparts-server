@@ -15,7 +15,7 @@ router.get('/users/shipping_address', cors.corsWithOptions, authenticate.verifyU
 
 router.get('/checkJWTtoken', userCtrl.checkJWTtoken);
 
-router.get('/auth/google/token', userCtrl.googleLogin);
+//router.get('/auth/google/token', userCtrl.googleLogin);
 
 router.post('/signup', cors.corsWithOptions, userCtrl.signup);
 
@@ -28,7 +28,7 @@ router.put('/users/shipping_address', cors.corsWithOptions, authenticate.verifyU
 
 //router.post('/store/storeId', cors.corsWithOptions, userCtrl.storeId);
 
-router.post('/loginsocial', userCtrl.loginGoogleUser);
+//router.post('/loginsocial', userCtrl.loginGoogleUser);
 
 router.post('/logincustom', cors.corsWithOptions, userCtrl.loginCustomUser);
 

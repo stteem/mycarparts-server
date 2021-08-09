@@ -70,7 +70,7 @@ exports.loginCustomUser = (req, res, next) => {
   }) (req, res, next);
 };
 
-exports.googleLogin = (req, res) => {
+/*exports.googleLogin = (req, res) => {
   passport.authenticate('google'), (req, res) => {
     console.log('req.user1', req.user);
     if (req.user) {
@@ -161,7 +161,7 @@ exports.loginGoogleUser = (req, res, next) => {
       });
     }
   );
-}
+}*/
 
 
 
