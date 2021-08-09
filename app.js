@@ -31,9 +31,9 @@ mongoose.connect(process.env.MONGODB_URI, {
 //app.options('*', cors.cors);
 // Set Headers
 app.use((req, res, next) => {
-  var origin = req.get('origin');
-  console.log('origin ',origin)
-  res.setHeader('Access-Control-Allow-Origin', origin);
+  //var origin = req.get('origin');
+  //console.log('origin ',origin)
+  res.setHeader('Access-Control-Allow-Origin', "*");
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   res.setHeader('Access-Control-Expose-Headers', '*, Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
