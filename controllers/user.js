@@ -6,38 +6,32 @@ const authenticate = require('../authenticate');
 
 
 exports.signup = (req, res, next) => {
-  User.register(new User({username: req.body.email}), 
+
+  const newUser = {
+    firstname : req.body.firstname,
+    lastname : req.body.lastname,
+    email : req.body.email,
+    telnum : req.body.telnum,
+    username: req.body.email
+}
+  User.register(new User(newUser), 
     req.body.password, (err, user) => {
     if(err) {
       res.statusCode = 500;
       res.setHeader('Content-Type', 'application/json');
       res.json({err: err});
     }
-    else {
-      user.firstname = req.body.firstname;
-      user.lastname = req.body.lastname;
-      user.email = req.body.email;
-      user.telnum = req.body.telnum;
-      user.save((err, response) => {
-        if (err) {
-          res.statusCode = 500;
-          res.setHeader('Content-Type', 'application/json');
-          res.json({err: err});
-          return ;
-        }
-        console.log('user ',response);
-        passport.authenticate('local')(req, res, () => {
-          res.statusCode = 200;
-          res.setHeader('Content-Type', 'application/json');
-          res.json({
-            firstname: response.firstname,
-            lastname: response.lastname,
-            message: 'Sign up successful'
-          });
-        });
-          
+   
+    console.log('user ',response);
+    passport.authenticate('local')(req, res, () => {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        firstname: response.firstname,
+        lastname: response.lastname,
+        message: 'Sign up successful'
       });
-    }
+    });  
   });
 };
 

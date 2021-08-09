@@ -2,7 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-const whitelist = ['http://localhost:4200'];
+const whitelist = [
+    'http://localhost:4200',
+    /\.localhost\.4200$/, 
+    'https://angry-hamilton-37fe82.netlify.app', 
+    /\.angry-hamilton-37fe82.netlify\.app$/
+];
 var corsOptionsDelegate = (req, callback) => {
     var corsOptions;
     console.log(req.header('Origin'));
